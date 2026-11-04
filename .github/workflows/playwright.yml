@@ -8,7 +8,9 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    # Playwright 1.56.1 supports Ubuntu 24.04; ubuntu-latest currently resolves
+    # to 26.04, which this pinned Playwright release does not support.
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
 
     steps:
