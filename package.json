@@ -1,0 +1,24 @@
+{
+  "name": "qa-automation-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Demonstration Playwright UI and API test suite for OWASP Juice Shop",
+  "scripts": {
+    "app:start": "docker compose up -d",
+    "app:stop": "docker compose down --volumes",
+    "test": "playwright test",
+    "test:ui": "playwright test --project=ui",
+    "test:api": "playwright test --project=api",
+    "test:headed": "playwright test --project=ui --headed",
+    "test:types": "tsc --noEmit",
+    "report": "playwright show-report"
+  },
+  "engines": {
+    "node": ">=20 <25"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1",
+    "@types/node": "24.10.0",
+    "typescript": "5.9.3"
+  }
+}
