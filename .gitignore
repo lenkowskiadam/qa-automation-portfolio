@@ -2,6 +2,7 @@ node_modules/
 playwright-report/
 test-results/
 blob-report/
+cucumber-report.html
 .env
 .env.*
 !.env.example

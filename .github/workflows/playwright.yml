@@ -35,6 +35,9 @@ jobs:
       - name: Run UI and API tests
         run: npm test
 
+      - name: Run Cucumber BDD scenarios
+        run: npm run test:bdd
+
       - name: Stop and remove the disposable application
         if: always()
         run: docker compose down --volumes
@@ -47,5 +50,6 @@ jobs:
           path: |
             playwright-report/
             test-results/
+            cucumber-report.html
           if-no-files-found: ignore
           retention-days: 14

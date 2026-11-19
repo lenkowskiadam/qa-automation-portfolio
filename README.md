@@ -1,4 +1,4 @@
-# Playwright UI and API Automation Demo
+# Playwright UI, API and Cucumber BDD Automation Demo
 
 > **Demonstration project:** this repository is a deliberately small portfolio sample, not a production test programme or a security assessment.
 
@@ -6,17 +6,17 @@ This project shows a client how I turn a business flow into maintainable, repeat
 
 ## What the demo covers
 
-Eight tests cover three customer-facing processes in Chromium:
+Eight behaviours cover three customer-facing processes. They can be run as direct Playwright tests or as readable Cucumber BDD scenarios:
 
 - product catalogue: seeded product details and search filtering;
 - customer registration: successful registration and mismatched-password validation;
 - authentication: successful registration-to-login, invalid UI login, API registration/login and duplicate/unknown-user errors.
 
-The suite uses TypeScript, Playwright fixtures, small Page Objects, role/ARIA selectors and contract-level assertions. There are no fixed sleeps. Each test gets an isolated browser context and unique user data. The application runs in a disposable container; `npm run app:stop` removes the container and all generated data. CI performs that cleanup even after failures.
+The suite uses TypeScript, Playwright fixtures, Cucumber/Gherkin, small Page Objects, role/ARIA selectors and contract-level assertions. There are no fixed sleeps. Each test gets an isolated browser context and unique user data. The application runs in a disposable container; `npm run app:stop` removes the container and all generated data. CI performs that cleanup even after failures.
 
 ## Requirements
 
-- Node.js 20–24 (verified with Node.js 24.7.0)
+- Node.js 22 or 24 (verified with Node.js 24.7.0; these are the versions supported by Cucumber 13)
 - npm (verified with npm 11.5.1)
 - Git
 - Docker Desktop or Docker Engine with Compose v2
@@ -43,6 +43,8 @@ Useful focused commands:
 npm run test:ui
 npm run test:api
 npm run test:headed
+npm run test:bdd
+npm run test:all
 ```
 
 Remove the disposable application and its test data when finished:
@@ -61,11 +63,20 @@ The HTML report is generated in `playwright-report/`. Open it with:
 npm run report
 ```
 
-On failure, Playwright retains a trace and captures a screenshot in `test-results/`. The report links to both artifacts. Video is intentionally disabled to keep this small demo fast.
+On failure, Playwright retains a trace and captures a screenshot in `test-results/`. The report links to both artifacts. Cucumber writes its readable HTML report to `cucumber-report.html` and embeds a screenshot when a UI scenario fails. Video is intentionally disabled to keep this small demo fast.
+
+## Cucumber structure
+
+- `features/*.feature` describes expected business behaviour in Gherkin (`Given` / `When` / `Then`).
+- `features/step-definitions/` translates each plain-language step into Playwright actions and assertions.
+- `features/support/world.ts` owns scenario state and creates/cleans an isolated browser or API context according to the `@ui` or `@api` tag.
+- `cucumber.js` selects feature and support files, enables TypeScript through `tsx`, runs two scenarios in parallel and configures terminal plus HTML reports.
+
+The Cucumber scenarios intentionally mirror the existing Playwright specs. This demonstrates both a compact code-first style and a business-readable BDD style without hiding the underlying Playwright implementation.
 
 ## Continuous integration
 
-The GitHub Actions workflow runs on pushes to `main`, pull requests and manual dispatch. It uses `npm ci`, installs only Chromium, checks TypeScript, starts the pinned application through Playwright, and runs all UI/API tests. The HTML report and failure evidence are uploaded as the `playwright-report` artifact for 14 days. Cleanup uses `if: always()` so the disposable application is removed after both successful and failed jobs.
+The GitHub Actions workflow runs on pushes to `main`, pull requests and manual dispatch. It uses `npm ci`, installs only Chromium, checks TypeScript, and runs both the direct Playwright suite and Cucumber scenarios against the pinned application. The HTML reports and failure evidence are uploaded as the `playwright-report` artifact for 14 days. Cleanup uses `if: always()` so the disposable application is removed after both successful and failed jobs.
 
 ## Demo limitations
 
